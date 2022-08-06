@@ -110,7 +110,14 @@ const ScopeOfWork = ({ project_variations, initialDataFromDB }) => {
           >
             Scope of Work
           </Typography>
-          <Box sx={{ minHeight: 400, mb: 1, border: '1px solid lightgrey' }}>
+          <Box
+            sx={{
+              minHeight: 400,
+              mb: 1,
+              border: '1px solid lightgrey',
+              padding: 1,
+            }}
+          >
             <Editor
               editorState={editorState}
               onEditorStateChange={onEditorStateChange}
