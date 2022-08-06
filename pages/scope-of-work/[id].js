@@ -114,17 +114,17 @@ const ScopeOfWork = ({ project_variations, initialDataFromDB }) => {
             sx={{
               minHeight: 400,
               mb: 1,
-              border: '1px solid lightgrey',
-              padding: 1,
             }}
           >
-            <Editor
-              editorState={editorState}
-              onEditorStateChange={onEditorStateChange}
-              wrapperClassName="wrapper-class"
-              editorClassName="editor-class"
-              toolbarClassName="toolbar-class"
-            />
+            <Box sx={{ border: '1px solid lightgrey', padding: 1 }}>
+              <Editor
+                editorState={editorState}
+                onEditorStateChange={onEditorStateChange}
+                wrapperClassName="wrapper-class"
+                editorClassName="editor-class"
+                toolbarClassName="toolbar-class"
+              />
+            </Box>
 
             {initialDataFromDB.length === 0 ? (
               <Button
