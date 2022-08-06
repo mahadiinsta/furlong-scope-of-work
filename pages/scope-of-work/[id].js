@@ -214,7 +214,7 @@ export async function getServerSideProps(context) {
   // console.log({ resp: project_variations_resp?.data?.data || ['NoData'] })
 
   const getInitialDataResp = await axios.get(
-    `http://localhost:3000/api/scopeofwork/scope-of-work?id=${id}`,
+    `https://furlong-scope-of-work.vercel.app//api/scopeofwork/scope-of-work?id=${id}`,
   )
   return {
     props: {
