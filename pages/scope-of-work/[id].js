@@ -94,7 +94,7 @@ const ScopeOfWork = ({ project_variations, initialDataFromDB }) => {
 
   useEffect(() => {
     setEditorState(EditorState.createWithContent(convertFromRaw(initialData)))
-  }, [])
+  }, [initialData])
 
   return (
     <>

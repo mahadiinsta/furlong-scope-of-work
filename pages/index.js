@@ -6,7 +6,7 @@ export default function Home() {
       <Typography variant="h3" align="center">
         Furlong Painting Scope of Work Application
       </Typography>
-      <p>>>>>>>>Go to https://......./scope-of-work/project-id</p>
+      <p>Go to https://......./scope-of-work/project-id</p>
     </Box>
   )
 }
