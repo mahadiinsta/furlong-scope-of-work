@@ -162,7 +162,7 @@ const ScopeOfWork = ({ project_variations, initialDataFromDB }) => {
                       align="left"
                       sx={{ fontWeight: 'bold', color: '#fff' }}
                     >
-                      Variation Summury
+                      Variation Summary
                     </TableCell>
                   </TableRow>
                 </TableHead>
