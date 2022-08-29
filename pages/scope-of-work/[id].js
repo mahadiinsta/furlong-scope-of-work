@@ -101,7 +101,7 @@ const ScopeOfWork = ({ project_variations, initialDataFromDB }) => {
       {loading === false ? (
         <Box sx={{ width: '80%', margin: '0 auto' }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Image src={logo} alt="bg" width={250} height={250} />
+            <Image src={logo} alt="bg" width={200} height={200} />
           </Box>
           <Typography
             variant="h4"
