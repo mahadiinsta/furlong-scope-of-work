@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
-
+import * as React from "react";
 import {
+  AppBar,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -10,6 +17,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -20,6 +28,9 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import logo from "../../public/Furlong_Logo.jpg";
+import CloseIcon from "@mui/icons-material/Close";
+import Pdf from "react-to-pdf";
+import ReactToPrint from "react-to-print";
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
   { ssr: false }
@@ -65,7 +76,6 @@ const ScopeOfWork = ({
         projectID: projectID,
         content: JSON.stringify(convertedContent),
       };
-
       const response = await axios.post("/api/scopeofwork/scope-of-work", data);
     } catch (error) {
       console.log(error);
@@ -90,6 +100,8 @@ const ScopeOfWork = ({
   const [convertedContent, setConvertedContent] = useState(null);
 
   const [state, setState] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const ref = React.useRef(null)
 
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
@@ -98,6 +110,22 @@ const ScopeOfWork = ({
 
   useEffect(() => {
     setEditorState(EditorState.createWithContent(convertFromRaw(initialData)));
+  }, []);
+
+
+  const reactToPrintContent = React.useCallback(() => {
+    return ref.current;
+  }, [ref.current]);
+
+  const reactToPrintTrigger = React.useCallback(() => {
+    // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
+    // to the root node of the returned component as it will be overwritten.
+
+    // Bad: the `onClick` here will be overwritten by `react-to-print`
+    // return <button onClick={() => alert('This will not work')}>Print this out!</button>;
+
+    // Good
+    return <button>Print using a Functional Component</button>;
   }, []);
 
   return (
@@ -143,11 +171,11 @@ const ScopeOfWork = ({
                 sx={{ display: "flex", justifyContent: "center", mt: 5, mb: 1 }}
               >
                 <Button
-                  onClick={updatePost}
+                  onClick={() => setDialogOpen(true)}
                   variant="contained"
                   sx={{ minWidth: 300, margin: "0 auto" }}
                 >
-                  Update
+                  generate pdf
                 </Button>
               </Box>
             ) : (
@@ -204,6 +232,128 @@ const ScopeOfWork = ({
           <CircularProgress size={40} />
         </Box>
       )}
+      <Dialog
+        fullScreen
+        open={dialogOpen}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <AppBar sx={{ position: "relative" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setDialogOpen(false)}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              Sound
+            </Typography>
+            <Pdf targetRef={ref} filename="code-example.pdf" bodyClass={"printElement1"}>
+              {({ toPdf }) => <button onClick={toPdf}>Generate Pdf</button>}
+            </Pdf>
+            <Button
+              onClick={publishPost}
+              variant="contained"
+              // sx={{ mt: 4, minWidth: 200 }}
+            >
+              Submit
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <ReactToPrint
+        content={reactToPrintContent}
+        documentTitle="AwesomeFileName"
+        // onAfterPrint={handleAfterPrint}
+        // onBeforeGetContent={handleOnBeforeGetContent}
+        // onBeforePrint={handleBeforePrint}
+        // removeAfterPrint
+        trigger={reactToPrintTrigger}
+      />
+        <Box
+          className="printElement1"
+          sx={{ m: 4, p: 4}}
+          ref={ref}
+        >
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Image src={logo} alt="bg" width={100} height={100} />
+          </Box>
+          <Typography
+            color="primary"
+            variant="h5"
+            align="center"
+            sx={{ pt: 3 }}
+          >
+            PROJECT SHEET - OFFICE{" "}
+          </Typography>
+          <Box sx={{ p: "20px 0px" }}>
+            <p>
+              <b>PROJECT NAME:</b> {project_data[0]?.Name}
+            </p>
+            <p>
+              <b>Sale Date:</b> {project_data[0]?.Es}
+            </p>
+            <p>
+              <b>SALESPERSON:</b> {project_data[0].Salesperson?.name}
+            </p>
+            <p>
+              <b>EST TIME (BUDGET):</b> {project_data[0]?.Budget_hours}
+            </p>
+            <p>
+              <b>EST TIME (AllOW) :</b> {project_data[0]?.Painter_Estimate}
+            </p>
+            <p>
+              <b>PROJECT TIMING:</b> {project_data[0]?.Project_Timing}
+            </p>
+            <p>
+              <b>CONTACT NAME:</b> {project_data[0]?.Site_name}
+            </p>
+            <p>
+              <b>ACCOUNT ADDRESS:</b> {project_data[0]?.Account_address}
+            </p>
+            {/* <p><b>SALESPERSON:</b> {project_data[0]?.Salesperson	}</p> */}
+            <p>
+              <b>CONTACT PHONE:</b> {project_data[0]?.Client_phone}
+            </p>
+            <p>
+              <b>CONTACT EMAIL:</b> {project_data[0]?.Client_email}
+            </p>
+            <p>
+              <b>SITE NAME :</b> {project_data[0]?.Site_Name3}
+            </p>
+            <p>
+              <b>SITE ADDRESS:</b> {project_data[0]?.Site_address}
+            </p>
+            <p>
+              <b>SITE CONTACT NAME:</b> {project_data[0]?.Site_name}
+            </p>
+            <p>
+              <b>SITE CONTACT NO:</b>{" "}
+              {project_data[0]?.Site_contact_phone_number}
+            </p>
+            <p>
+              <b>SITE CONTACT EMAIL:</b> {project_data[0]?.Site_Contact_Email}
+            </p>
+            <p>
+              <b>
+                <u>SCOPE OF WORK</u>
+              </b>
+            </p>
+            <Box sx={{ borderTop: "1px solid lightgrey", p: 1 }}>
+              <Editor
+                toolbarHidden
+                editorState={editorState}
+                wrapperClassName="wrapper-class"
+                editorClassName="editor-class"
+                toolbarClassName="toolbar-class"
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Dialog>
     </>
   );
 };
