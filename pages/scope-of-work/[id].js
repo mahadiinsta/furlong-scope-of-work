@@ -31,6 +31,9 @@ import logo from "../../public/Furlong_Logo.jpg";
 import CloseIcon from "@mui/icons-material/Close";
 import Pdf from "react-to-pdf";
 import ReactToPrint from "react-to-print";
+// import CopyToClipboard from "react-copy-to-clipboard";
+// import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+// import DoneAllIcon from '@mui/icons-material/DoneAll';
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
   { ssr: false }
@@ -101,7 +104,7 @@ const ScopeOfWork = ({
 
   const [state, setState] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const ref = React.useRef(null)
+  const ref = React.useRef(null);
 
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
@@ -111,7 +114,6 @@ const ScopeOfWork = ({
   useEffect(() => {
     setEditorState(EditorState.createWithContent(convertFromRaw(initialData)));
   }, []);
-
 
   const reactToPrintContent = React.useCallback(() => {
     return ref.current;
@@ -127,6 +129,15 @@ const ScopeOfWork = ({
     // Good
     return <button>Print using a Functional Component</button>;
   }, []);
+
+
+  const [copyClick, setCopyClick] = useState(false)
+  const handleCopyClick = () => {
+    setCopyClick(true)
+    setInterval(() => {
+      setCopyClick(false)
+    }, 1000)
+  }
 
   return (
     <>
@@ -151,13 +162,23 @@ const ScopeOfWork = ({
             <Box sx={{ border: "1px solid lightgrey", padding: 1 }}>
               <Editor
                 editorState={editorState}
+                handlePastedText={() => false}
                 onEditorStateChange={onEditorStateChange}
                 wrapperClassName="wrapper-class"
                 editorClassName="editor-class"
                 toolbarClassName="toolbar-class"
               />
             </Box>
-
+            {/* <CopyToClipboard text={editorState.getCurrentContent().getPlainText()} className="copy-button">
+              {copyClick === false ? (
+                <ContentCopyIcon
+                  sx={{ cursor: "pointer" }}
+                  onClick={handleCopyClick}
+                />
+              ) : (
+                <DoneAllIcon />
+              )}
+            </CopyToClipboard> */}
             {initialDataFromDB.length === 0 ? (
               <Button
                 onClick={publishPost}
@@ -171,11 +192,11 @@ const ScopeOfWork = ({
                 sx={{ display: "flex", justifyContent: "center", mt: 5, mb: 1 }}
               >
                 <Button
-                  onClick={() => setDialogOpen(true)}
+                  onClick={updatePost}
                   variant="contained"
                   sx={{ minWidth: 300, margin: "0 auto" }}
                 >
-                  generate pdf
+                  Update Post
                 </Button>
               </Box>
             ) : (
@@ -232,7 +253,7 @@ const ScopeOfWork = ({
           <CircularProgress size={40} />
         </Box>
       )}
-      <Dialog
+      {/* <Dialog
         fullScreen
         open={dialogOpen}
         // onClose={handleClose}
@@ -315,7 +336,7 @@ const ScopeOfWork = ({
               <b>ACCOUNT ADDRESS:</b> {project_data[0]?.Account_address}
             </p>
             {/* <p><b>SALESPERSON:</b> {project_data[0]?.Salesperson	}</p> */}
-            <p>
+      {/* <p>
               <b>CONTACT PHONE:</b> {project_data[0]?.Client_phone}
             </p>
             <p>
@@ -353,7 +374,7 @@ const ScopeOfWork = ({
             </Box>
           </Box>
         </Box>
-      </Dialog>
+      </Dialog>  */}
     </>
   );
 };
